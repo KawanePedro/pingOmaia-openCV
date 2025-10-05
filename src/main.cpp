@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <chrono>
 #include "Bola.hpp"
 #include "Jogador.hpp"
 
@@ -94,6 +95,11 @@ int main() {
     int player1FaceY = WINDOW_HEIGHT / 2;
     int player2FaceY = WINDOW_HEIGHT / 2;
     Mat webcamFrame, grayFrame;
+    
+    // Timer de início
+    bool gameStarted = false;
+    int countdown = 3;
+    auto countdownStart = chrono::steady_clock::now();
 
     // --- Game Loop Principal ---
     while (true) {
@@ -188,9 +194,25 @@ int main() {
         }
 
         // --- 2. Atualizar Estado do Jogo ---
+        
+        // Timer de contagem regressiva
+        if (!gameStarted) {
+            auto now = chrono::steady_clock::now();
+            auto elapsed = chrono::duration_cast<chrono::seconds>(now - countdownStart).count();
+            
+            if (elapsed >= 1) {
+                countdown--;
+                countdownStart = now;
+                if (countdown <= 0) {
+                    gameStarted = true;
+                }
+            }
+        }
 
-        // Mover a bola
-        bola.update();
+        // Mover a bola apenas se o jogo começou
+        if (gameStarted) {
+            bola.update();
+        }
 
         // Colisão com as paredes superior e inferior
         if (bola.getPosition().y <= BALL_RADIUS || bola.getPosition().y >= WINDOW_HEIGHT - BALL_RADIUS) {
@@ -198,7 +220,7 @@ int main() {
         }
 
         // Verificação de pontuação
-        if (bola.getPosition().x <= 0) {
+        if (gameStarted && bola.getPosition().x <= 0) {
             player2.addPoint();
             cout << "Ponto para " << player2.getName() << "! Placar: " << player1.getScore() << " x " << player2.getScore() << endl;
             
@@ -211,7 +233,10 @@ int main() {
                 recordOut.close();
             }
             bola.reset(WINDOW_WIDTH, WINDOW_HEIGHT);
-        } else if (bola.getPosition().x >= WINDOW_WIDTH) {
+            gameStarted = false;
+            countdown = 3;
+            countdownStart = chrono::steady_clock::now();
+        } else if (gameStarted && bola.getPosition().x >= WINDOW_WIDTH) {
             player1.addPoint();
             cout << "Ponto para " << player1.getName() << "! Placar: " << player1.getScore() << " x " << player2.getScore() << endl;
             
@@ -224,14 +249,17 @@ int main() {
                 recordOut.close();
             }
             bola.reset(WINDOW_WIDTH, WINDOW_HEIGHT);
+            gameStarted = false;
+            countdown = 3;
+            countdownStart = chrono::steady_clock::now();
         }
 
         // Colisão com as raquetes
-        if (bola.checkCollision(player1.getRaqueteBounds())) {
+        if (gameStarted && bola.checkCollision(player1.getRaqueteBounds())) {
             bola.setVelocityX(abs(bola.getVelocityX()) * 1.02f);
             bola.setPosition(player1.getRaqueteBounds().x + player1.getRaqueteBounds().width + BALL_RADIUS, bola.getPosition().y);
             if (player1Sound) Mix_PlayChannel(-1, player1Sound, 0);
-        } else if (bola.checkCollision(player2.getRaqueteBounds())) {
+        } else if (gameStarted && bola.checkCollision(player2.getRaqueteBounds())) {
             bola.setVelocityX(-abs(bola.getVelocityX()) * 1.02f);
             bola.setPosition(player2.getRaqueteBounds().x - BALL_RADIUS, bola.getPosition().y);
             if (player2Sound) Mix_PlayChannel(-1, player2Sound, 0);
@@ -254,6 +282,16 @@ int main() {
         // Exibe recorde
         string recordText = "Record: " + to_string(record);
         putText(frame, recordText, Point(10, 30), FONT_HERSHEY_SIMPLEX, 0.7, Scalar(255, 255, 0), 2);
+        
+        // Exibe contagem regressiva
+        if (!gameStarted && countdown > 0) {
+            string countdownText = to_string(countdown);
+            int textWidth = getTextSize(countdownText, FONT_HERSHEY_SIMPLEX, 3.0, 4, 0).width;
+            putText(frame, countdownText, Point((WINDOW_WIDTH - textWidth)/2, WINDOW_HEIGHT/2 + 50), 
+                   FONT_HERSHEY_SIMPLEX, 3.0, Scalar(255, 255, 255), 6);
+            putText(frame, countdownText, Point((WINDOW_WIDTH - textWidth)/2, WINDOW_HEIGHT/2 + 50), 
+                   FONT_HERSHEY_SIMPLEX, 3.0, Scalar(255, 0, 0), 4);
+        }
 
         // --- 4. Exibir o Quadro ---
         imshow(windowTitle, frame);
