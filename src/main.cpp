@@ -62,6 +62,7 @@ int main() {
     
     // Carrega e toca a música
     Mix_Music* music = Mix_LoadMUS("assets/sound/soundtrack.mp3");
+    Mix_Music* victoryMusic = Mix_LoadMUS("assets/sound/vitoria.mp3");
     if (music) {
         Mix_VolumeMusic(38); // 30% do volume (128 = 100%)
         Mix_PlayMusic(music, -1); // -1 = loop infinito
@@ -142,6 +143,45 @@ int main() {
         // --- 1. Processar Entradas (Teclado para sair) ---
         int key = waitKeyEx(1);
         if (key == 27 || key == 'q' || key == 'Q') { // Tecla ESC ou Q para sair
+            // Para a música do jogo e toca o áudio do vídeo
+            Mix_HaltMusic();
+            if (victoryMusic) {
+                Mix_PlayMusic(victoryMusic, 0);
+            }
+            
+            // Tela de vitória
+            VideoCapture victoryVideo("assets/video/vitoria.mp4");
+            if (victoryVideo.isOpened()) {
+                Mat victoryFrame;
+                string congratsText;
+                if (singlePlayer) {
+                    if (player1.getScore() > player2.getScore()) {
+                        congratsText = "Parabens, voce ganhou da maquina!";
+                    } else {
+                        congratsText = "Voce perdeu, tem que treinar mais viu...";
+                    }
+                } else {
+                    string winner = (player1.getScore() > player2.getScore()) ? player1.getName() : player2.getName();
+                    congratsText = "Parabens " + winner + ", voce venceu!!";
+                }
+                
+                double fps = victoryVideo.get(CAP_PROP_FPS);
+                int delay = (fps > 0) ? (1000 / fps) : 33;
+                
+                while (true) {
+                    victoryVideo >> victoryFrame;
+                    if (victoryFrame.empty()) break;
+                    
+                    resize(victoryFrame, victoryFrame, Size(WINDOW_WIDTH, WINDOW_HEIGHT));
+                    int textWidth = getTextSize(congratsText, FONT_HERSHEY_SIMPLEX, 1.0, 2, 0).width;
+                    putText(victoryFrame, congratsText, Point((WINDOW_WIDTH - textWidth)/2, WINDOW_HEIGHT/2), 
+                           FONT_HERSHEY_SIMPLEX, 1.0, Scalar(0, 0, 0), 2);
+                    
+                    imshow(windowTitle, victoryFrame);
+                    waitKey(delay);
+                }
+                victoryVideo.release();
+            }
             break;
         }
 
@@ -219,6 +259,9 @@ int main() {
     // Limpa SDL
     if (music) {
         Mix_FreeMusic(music);
+    }
+    if (victoryMusic) {
+        Mix_FreeMusic(victoryMusic);
     }
     if (player1Sound) {
         Mix_FreeChunk(player1Sound);
