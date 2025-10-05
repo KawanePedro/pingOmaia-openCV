@@ -16,8 +16,8 @@ void Bola::update() {
 // Reinicia a bola no centro com velocidade aleatória
 void Bola::reset(int windowWidth, int windowHeight) {
     position = Point2f(windowWidth / 2, windowHeight / 2);
-    velocity.x = (rand() % 2 == 0) ? 12.0f : -12.0f;
-    velocity.y = (rand() % 2 == 0) ? 12.0f : -12.0f;
+    velocity.x = (rand() % 2 == 0) ? 18.0f : -18.0f;
+    velocity.y = (rand() % 2 == 0) ? 18.0f : -18.0f;
 }
 
 // Desenha a bola como um círculo branco na tela

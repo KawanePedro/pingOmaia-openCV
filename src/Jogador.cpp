@@ -38,9 +38,9 @@ string Jogador::getName() const {
 void Jogador::aiUpdate(int ballY, int paddleHeight) {
     int paddleCenterY = raquete.getY() + paddleHeight / 2;
     
-    if (ballY < paddleCenterY - 10) {
-        raquete.setY(raquete.getY() - 6);
-    } else if (ballY > paddleCenterY + 10) {
-        raquete.setY(raquete.getY() + 6);
+    if (ballY < paddleCenterY - 5) {
+        raquete.setY(raquete.getY() - 12);
+    } else if (ballY > paddleCenterY + 5) {
+        raquete.setY(raquete.getY() + 12);
     }
 }
