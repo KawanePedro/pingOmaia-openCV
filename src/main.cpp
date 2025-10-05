@@ -154,7 +154,9 @@ int main() {
             if (victoryVideo.isOpened()) {
                 Mat victoryFrame;
                 string congratsText;
-                if (singlePlayer) {
+                if (player1.getScore() == player2.getScore()) {
+                    congratsText = "Deu Empate!!";
+                } else if (singlePlayer) {
                     if (player1.getScore() > player2.getScore()) {
                         congratsText = "Parabens, voce ganhou da maquina!";
                     } else {
