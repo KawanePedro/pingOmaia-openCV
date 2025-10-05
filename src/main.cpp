@@ -246,7 +246,8 @@ int main() {
         }
 
         string scoreText = to_string(player1.getScore()) + "   " + to_string(player2.getScore());
-        putText(frame, scoreText, Point(WINDOW_WIDTH / 2 - 60, 50), FONT_HERSHEY_SIMPLEX, 1.5, Scalar(255, 255, 255), 2);
+        putText(frame, scoreText, Point(WINDOW_WIDTH / 2 - 60, 50), FONT_HERSHEY_SIMPLEX, 1.5, Scalar(255, 255, 255), 4);
+        putText(frame, scoreText, Point(WINDOW_WIDTH / 2 - 60, 50), FONT_HERSHEY_SIMPLEX, 1.5, Scalar(0, 0, 0), 2);
         
         // Exibe recorde
         string recordText = "Record: " + to_string(record);
