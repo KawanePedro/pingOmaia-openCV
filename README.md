@@ -9,7 +9,7 @@ Segundo Projeto da Cadeira de Linguagem de Programação I
 `pingOmaia` é um jogo interativo de ping pong, controlado apenas pela sua face!
 
 # Diagrama de Classes
-<img width="1053" height="746" alt="image" src="pong-openCV/assets/image/diagramaClasses.png" />
+<img width="1053" height="746" alt="image" src="assets/image/diagramaClasses.png" />
 
 
 # Dependências
