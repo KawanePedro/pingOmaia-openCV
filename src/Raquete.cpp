@@ -2,11 +2,15 @@
 
 // Construtor: inicializa a raquete com posição e dimensões
 Raquete::Raquete(int x, int y, int width, int height, int winHeight) 
-    : bounds(x, y, width, height), windowHeight(winHeight), paddleHeight(height) {}
+    : bounds(x, y, width, height), windowHeight(winHeight), paddleHeight(height), 
+      targetY(y), currentY(y) {}
 
 // Atualiza a posição Y da raquete centralizando na coordenada fornecida
 void Raquete::update(int newY) {
-    bounds.y = newY - paddleHeight / 2;
+    targetY = newY - paddleHeight / 2;
+    // Interpolação suave (0.3 = velocidade de suavização)
+    currentY += (targetY - currentY) * 0.3f;
+    bounds.y = (int)currentY;
     keepInBounds();
 }
 

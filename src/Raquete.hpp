@@ -12,6 +12,8 @@ private:
     Rect bounds;        // Retângulo que define posição e tamanho
     int windowHeight;   // Altura da janela (para limites)
     int paddleHeight;   // Altura da raquete
+    float targetY;      // Posição Y desejada
+    float currentY;     // Posição Y atual (suavizada)
 
 public:
     Raquete(int x, int y, int width, int height, int winHeight);  // Construtor

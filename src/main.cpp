@@ -1,20 +1,15 @@
-// Bibliotecas para OpenCV (visão computacional)
 #include <opencv2/opencv.hpp>
 #include <opencv2/objdetect.hpp>
-// Bibliotecas para SDL (áudio)
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
-// Bibliotecas padrão C++
 #include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
 #include <chrono>
-// Classes do projeto
 #include "Bola.hpp"
 #include "Jogador.hpp"
 
-// Usar os namespaces para facilitar a escrita do código
 using namespace cv;
 using namespace std;
 
@@ -75,7 +70,7 @@ int main() {
     Mix_Music* music = Mix_LoadMUS("assets/sound/soundtrack.mp3");
     Mix_Music* victoryMusic = Mix_LoadMUS("assets/sound/vitoria.mp3");
     if (music) {
-        Mix_VolumeMusic(19); // 15% do volume (128 = 100%)
+        Mix_VolumeMusic(60); // 50% do volume (128 = 100%)
         Mix_PlayMusic(music, -1); // -1 = loop infinito
     }
     
@@ -83,7 +78,7 @@ int main() {
     Mix_Chunk* player1Sound = Mix_LoadWAV("assets/sound/player1.mp3");
     Mix_Chunk* player2Sound = Mix_LoadWAV("assets/sound/player2.mp3");
     Mix_Chunk* golSound = Mix_LoadWAV("assets/sound/gol.mp3");
-    if (golSound) Mix_VolumeChunk(golSound, 32); // 25% do volume (128 = 100%)
+    if (golSound) Mix_VolumeChunk(golSound, 20); // 25% do volume (128 = 100%)
     
     // Cria a janela do jogo com título baseado no modo
     string windowTitle = singlePlayer ? "Pong - vs IA" : "Pong - 2 Jogadores";
